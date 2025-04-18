@@ -30,25 +30,33 @@ from ratings2 a
 inner join ratings_sel b
 on a.movieId =b.movieId;
 
-drop table if exists movies_final;
+DROP TABLE IF EXISTS movies_final;
 
-create table movies_final as
-select a.movieId as movie_id,
-a.title as title,
-a.genres as genres,
-a.year_movies as year_movies
-from movies2 a
-inner join movies_sel b
-on a.movieId =b.movieId;
-
+CREATE TABLE movies_final AS
+SELECT DISTINCT
+    a.movieId AS movie_id,
+    a.title AS title,
+    a.genres AS genres,
+    a.year_movies AS year_movies
+FROM movies2 a
+INNER JOIN movies_sel b
+    ON a.movieId = b.movieId;
 ---Unir tablas de peliculas y calificaciones
 
 drop table if exists df_final;
 
-create table df_final as select
-a.*,
-b.title,
-b.genres,
-b.year_movies
-from ratings_final a inner join 
-movies_final b on a.movie_id = b.movie_id
+create table df_final as
+select distinct
+    a.user_id,
+    a.movie_id,
+    a.rating,
+    a.year_ratings,
+    a.month,
+    a.day,
+    b.title,
+    b.genres,
+    b.year_movies
+from ratings_final a
+inner join movies_final b
+on a.movie_id = b.movie_id;
+    
