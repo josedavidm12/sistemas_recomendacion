@@ -13,7 +13,8 @@ drop table if exists movies_sel;
 
 create table movies_sel as select *
                          from movies2
-                         where genres != '(no genres listed)';
+                         where genres != '(no genres listed)'
+                           AND year_movies >= 1940;
 
 
 ---Creación de tablas filtradas
@@ -41,8 +42,8 @@ SELECT DISTINCT
 FROM movies2 a
 INNER JOIN movies_sel b
     ON a.movieId = b.movieId;
----Unir tablas de peliculas y calificaciones
 
+---Unir tablas de peliculas y calificaciones
 drop table if exists df_final;
 
 create table df_final as
