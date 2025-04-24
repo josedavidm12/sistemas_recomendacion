@@ -52,7 +52,7 @@ def ejecutar_sql (nombre_archivo, cur):
 
 def visual_outliers(df):    
     # Seleccionar columnas numéricas y excluir las de géneros
-    numeric_cols = df.select_dtypes(include='number').columns
+    numeric_cols = df.select_dtypes(include='float64').columns
 
     df_comparison = pd.DataFrame()
     for col in numeric_cols:
@@ -95,7 +95,7 @@ def visual_outliers(df):
     fig_hist.show()
 
 def contar_outliers_iqr(df):
-    numeric_cols = df.select_dtypes(include=[np.number]).columns
+    numeric_cols = df.select_dtypes(include='float64').columns
     outliers_count = {
         col: ((df[col] < df[col].quantile(0.25) - 1.5 * (df[col].quantile(0.75) - df[col].quantile(0.25))) |
               (df[col] > df[col].quantile(0.75) + 1.5 * (df[col].quantile(0.75) - df[col].quantile(0.25)))).sum()
@@ -112,7 +112,7 @@ def impute_outliers_with_mean(df, column):
         column: Nombre de la columna a imputar.
     """
 
-    numeric_cols = df.select_dtypes(include=[np.number]).columns
+    numeric_cols = df.select_dtypes(include='float64').columns
 
     if column not in numeric_cols:
         print(f"La columna '{column}' no es numérica.")
