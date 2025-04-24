@@ -13,7 +13,8 @@ drop table if exists movies_sel;
 
 create table movies_sel as select *
                          from movies2
-                         where genres != '(no genres listed)';
+                         where genres != '(no genres listed)'
+                           AND year_movies >= 1940;
 
 
 ---Creación de tablas filtradas
