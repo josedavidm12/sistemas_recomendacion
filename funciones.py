@@ -29,3 +29,48 @@ def ejecutar_sql (nombre_archivo, cur):
     sql_as_string=sql_file.read()
     sql_file.close
     cur.executescript(sql_as_string)
+
+def visual_outliers(df):
+
+    # Seleccionar columnas numéricas y excluir las de géneros
+    numeric_cols = df.select_dtypes(include='number').columns
+
+    df_comparison = pd.DataFrame()
+    for col in numeric_cols:
+        df_comparison[f'{col}_original'] = df[col]
+
+    num_vars = len(numeric_cols)
+    n_cols = 2
+    n_rows = (num_vars + n_cols - 1) // n_cols
+
+    # Boxplots
+    plt.figure(figsize=(12, 5 * n_rows))
+    for i, col in enumerate(numeric_cols):
+        plt.subplot(n_rows, n_cols, i + 1)
+        sns.boxplot(data=df_comparison[[f'{col}_original']])
+        plt.title(f'Boxplot de {col} Original', fontsize=14)
+        plt.xticks([0], ['Original'], fontsize=12)
+        plt.xlabel('')
+        plt.ylabel('Valor', fontsize=12)
+
+    plt.tight_layout()
+    plt.show()
+
+    # Histogramas con KDE
+    fig_hist = make_subplots(n_rows, n_cols, subplot_titles=[f'Histograma {column}' for column in numeric_cols], shared_yaxes=True)
+    for i, column in enumerate(numeric_cols):
+        hist = go.Histogram(x=df[column], name=f'Histograma {column}', nbinsx=30, opacity=0.75,
+                            marker=dict(color='blue', line=dict(color='black', width=1)))
+        fig_hist.add_trace(hist, row=(i // n_cols) + 1, col=(i % n_cols) + 1)
+
+        kde = gaussian_kde(df[column], bw_method='scott')
+        x = np.linspace(df[column].min(), df[column].max(), 1000)
+        p = kde(x)
+        hist_values, bin_edges = np.histogram(df[column], bins=30)
+        kde_scaled = p * np.max(hist_values) / np.max(p)
+
+        fig_hist.add_trace(go.Scatter(x=x, y=kde_scaled, mode='lines', name=f'KDE {column}',
+                                      line=dict(color='red')), row=(i // n_cols) + 1, col=(i % n_cols) + 1)
+
+    fig_hist.update_layout(height=300 * n_rows, width=800, title_text="Histogramas variables numéricas con KDE")
+    fig_hist.show()
