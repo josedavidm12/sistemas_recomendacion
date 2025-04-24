@@ -30,8 +30,8 @@ def ejecutar_sql (nombre_archivo, cur):
     sql_file.close
     cur.executescript(sql_as_string)
 
-def visual_outliers(df):
 
+def visual_outliers(df):    
     # Seleccionar columnas numéricas y excluir las de géneros
     numeric_cols = df.select_dtypes(include='number').columns
 
@@ -74,3 +74,12 @@ def visual_outliers(df):
 
     fig_hist.update_layout(height=300 * n_rows, width=800, title_text="Histogramas variables numéricas con KDE")
     fig_hist.show()
+
+def contar_outliers_iqr(df):
+    numeric_cols = df.select_dtypes(include=[np.number]).columns
+    outliers_count = {
+        col: ((df[col] < df[col].quantile(0.25) - 1.5 * (df[col].quantile(0.75) - df[col].quantile(0.25))) |
+              (df[col] > df[col].quantile(0.75) + 1.5 * (df[col].quantile(0.75) - df[col].quantile(0.25)))).sum()
+        for col in numeric_cols
+    }
+    return pd.DataFrame(list(outliers_count.items()), columns=['Variable', 'Cantidad de Atípicos'])
