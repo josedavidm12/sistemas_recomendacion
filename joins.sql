@@ -8,6 +8,8 @@ create table ratings_sel as select movieId,
                          having cnt_rat >10
                          order by cnt_rat desc ;
 
+
+
 ---Crear tabla sin las peliculas que no tienen generos establecidos
 drop table if exists movies_sel;
 
@@ -17,7 +19,9 @@ create table movies_sel as select *
                            AND year_movies >= 1940;
 
 
+
 ---Creación de tablas filtradas
+---Tabla de calificaciones filtrada
 drop table if exists ratings_final;
 
 create table ratings_final as 
@@ -31,6 +35,8 @@ from ratings2 a
 inner join ratings_sel b
 on a.movieId =b.movieId;
 
+
+---Tabla de peliculas filtrada
 DROP TABLE IF EXISTS movies_final;
 
 CREATE TABLE movies_final AS
@@ -42,6 +48,8 @@ SELECT DISTINCT
 FROM movies2 a
 INNER JOIN movies_sel b
     ON a.movieId = b.movieId;
+
+
 
 ---Unir tablas de peliculas y calificaciones
 drop table if exists df_final;
