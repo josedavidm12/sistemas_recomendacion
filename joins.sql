@@ -27,10 +27,7 @@ drop table if exists ratings_final;
 create table ratings_final as 
 select a.userId as user_id,
 a.movieId as movie_id,
-a.rating as rating,
-a.year_ratings as year_ratings,
-a.month as month,
-a.day as day
+a.rating as rating
 from ratings2 a
 inner join ratings_sel b
 on a.movieId =b.movieId;
@@ -59,9 +56,6 @@ select distinct
     a.user_id,
     a.movie_id,
     a.rating,
-    a.year_ratings,
-    a.month,
-    a.day,
     b.title,
     b.genres,
     b.year_movies
